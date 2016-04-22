@@ -11,21 +11,21 @@ type Server struct {
 }
 
 func main() {
-	//设置监听端口
-	port := "9988"
-	Start_server(port)
+	//本机ip
+	ip := "210.38.196.xxx"
+	Start_server(ip)
 }
 
 /** 开启服务
 *	@params    port  		   string	监听端口
 *
 **/
-func Start_server(port string) {
+func Start_server(ip string) {
 	//初始化
 	chaters := Server{make(map[net.Conn]string, 0)}
 
 	//监听
-	conn, err := net.Listen("tcp", "localhost:"+port)
+	conn, err := net.Listen("tcp", ip+":9988")
 	chaters.Check_err(err, nil)
 	fmt.Println("Start Ok!")
 	for {

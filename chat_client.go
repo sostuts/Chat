@@ -33,6 +33,7 @@ func Input_Ip() string {
 func Check_err(err error) {
 	if err != nil {
 		fmt.Println(err.Error())
+		bufio.NewReader(os.Stdin).ReadLine()
 		os.Exit(1)
 	}
 }
