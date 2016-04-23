@@ -24,9 +24,14 @@ func main() {
 
 //输入服务器IP
 func Input_Ip() string {
-	fmt.Println("Please input server IP .")
-	line, _, _ := bufio.NewReader(os.Stdin).ReadLine()
-	return string(line)
+	for {
+		fmt.Println("Please input server IP .")
+		line, _, _ := bufio.NewReader(os.Stdin).ReadLine()
+		//正确的IP格式才返回值
+		if net.ParseIP(string(line)) != nil {
+			return string(line)
+		}
+	}
 }
 
 //检查错误
