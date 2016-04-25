@@ -12,7 +12,7 @@ type Server struct {
 
 func main() {
 	//本机ip
-	ip := "210.38.196.xxx"
+	ip := "xxx.xxx.xxx.xxx"
 	Start_server(ip)
 }
 
@@ -25,7 +25,7 @@ func Start_server(ip string) {
 	chaters := Server{make(map[net.Conn]string, 0)}
 
 	//监听
-	conn, err := net.Listen("tcp", ip+":9988")
+	conn, err := net.Listen("tcp", ip+":9989")
 	chaters.Check_err(err, nil)
 	fmt.Println("Start Ok!")
 	for {
@@ -128,15 +128,20 @@ func (server *Server) Handle_message(mode bool, bytes []byte, conn net.Conn) (br
 **/
 func (server *Server) Receive(mode bool, conn net.Conn) (bytes []byte, err error) {
 	if mode == true {
-		//姓名10字节
+		//姓名最大10字节
 		bytes = make([]byte, 10)
+		//接收信息
+		_, err = conn.Read(bytes)
 	} else {
-		//内容256字节
+		//内容最大256字节
 		bytes = make([]byte, 256)
-	}
+		var length int
 
-	//接收信息
-	_, err = conn.Read(bytes)
+		//接收信息
+		length, err = conn.Read(bytes)
+		//内容截取
+		bytes = bytes[:length]
+	}
 	return
 }
 

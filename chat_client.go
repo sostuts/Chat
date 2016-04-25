@@ -16,7 +16,7 @@ func main() {
 	//获取IP
 	ip := Input_Ip()
 	//连接服务器
-	conn := Connect(ip + ":9988")
+	conn := Connect(ip + ":9989")
 	//begin
 	go conn.Receive()
 	conn.Chat()
@@ -65,9 +65,11 @@ func (c *Conn) Chat() {
 		}
 	}
 	fmt.Println("Who are u?")
+	//名字不加密
 	Reader(false)
 	fmt.Println("Welcome!")
 	for {
+		//加密内容
 		Reader(true)
 	}
 }
@@ -76,18 +78,16 @@ func (c *Conn) Chat() {
 func (c *Conn) Receive() {
 	for {
 		bytes := make([]byte, 256)
-		_, err := c.conn.Read(bytes)
+		length, err := c.conn.Read(bytes)
 		Check_err(err)
 		//解密之后输出,不解密前16个字符
-		fmt.Println(string(bytes[:16]) + Decrypt(bytes[16:], []byte("www.zeffee.com")))
+		fmt.Println(string(bytes[:16]) + Decrypt(bytes[16:], []byte("www.zeffee.com"), length-16))
 	}
 }
 
 //加密信息
 func Encypt(source, the_key []byte) (mcrypt []byte) {
 	today := time.Now().Day()
-	//添加文本总长度
-	mcrypt = append(mcrypt, byte(len(source)))
 	for i, val := range source {
 		if i%2 == 0 {
 			mcrypt = append(mcrypt, val^byte(today))
@@ -100,12 +100,10 @@ func Encypt(source, the_key []byte) (mcrypt []byte) {
 }
 
 //解密信息
-func Decrypt(mcrypt, the_key []byte) (source string) {
+func Decrypt(mcrypt, the_key []byte, length int) (source string) {
 	today := time.Now().Day()
-	//获取文本总长度
-	count := int(mcrypt[0])
-	for i, val := range mcrypt[1:] {
-		if i >= count {
+	for i, val := range mcrypt {
+		if i >= length {
 			break
 		}
 		if i%2 == 0 {
